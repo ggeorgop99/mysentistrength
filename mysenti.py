@@ -14,7 +14,6 @@ from difflib import SequenceMatcher
 from hunspell import Hunspell
 import os
 
-
 mode='bin'
 def clearfiles(mode):
 	data = pd.read_csv("./dataset/dirtyreviews.csv")
@@ -212,7 +211,7 @@ with open('dataset\\finalgreekmysenti'+mode+'.csv', 'w',newline='',encoding='utf
 
 		review = [x.replace('\n', '') for x in review] #bgazw to /n pou ebale to opencsv
 		
-		flag=False #kathe review arxikopoiw false. An ginei true meta h epomenh leksh pou brisketai den metrate
+		flag=False #kathe review arxikopoiw false. An ginei true meta h epomenh leksh pou brisketai den metrietai
 			
 		rvwords=review[0].split(" ") #kathe leksh pou exei to review
 
