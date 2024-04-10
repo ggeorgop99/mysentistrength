@@ -1,3 +1,11 @@
+#IMPORTANT for cyhunspell (ubuntu-wsl):
+# gotta get the greek dictionaries and put them in the hunspell dics
+# in this location ~/.local/lib/python3.10/site-packages/hunspell/dictionaries
+# and from terminal do "nautilus ." to open it in GUI and copy-paste dics 
+# required for cyhunspell (ubuntu-wsl)
+# apt install -y  autoconf libtool  gettext autopoint
+# pip install https://github.com/MSeal/cython_hunspell/archive/refs/tags/2.0.3.tar.gz
+
 from sentistrength import PySentiStr
 import pandas as pd
 import csv
