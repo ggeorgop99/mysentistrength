@@ -6,12 +6,12 @@ from hunspell import Hunspell
 import os
 
 
-mode='nonbin'
+mode='bin'
 
-data = pd.read_csv("dirtyreviews.csv",encoding = "utf-8")
-print('peos')
-data=data.drop('topic',1)
-data=data.drop('title',1)
+data = pd.read_csv("../mysentistrength/dataset/dirtyreviews.csv",encoding = "utf-8")
+print('test')
+data=data.drop('topic', axis=1)
+data=data.drop('title', axis=1)
 
 data=data.dropna()
 data=data.drop_duplicates(subset=['comment'], keep='first')

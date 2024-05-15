@@ -14,12 +14,13 @@ from difflib import SequenceMatcher
 from hunspell import Hunspell
 import os
 
-mode='bin'
+mode='nonbin'
+
 def clearfiles(mode):
-	data = pd.read_csv("./dataset/dirtyreviews.csv")
+	data = pd.read_csv('dataset/dirtyreviews.csv')
 	
-	data=data.drop('topic',1)
-	data=data.drop('title',1)
+	data=data.drop('topic', axis=1)
+	data=data.drop('title', axis=1)
 
 	data=data.dropna()
 	data=data.drop_duplicates(subset=['comment'], keep='first')
@@ -49,23 +50,17 @@ def clearfiles(mode):
 	cols = cols[-1:] + cols[:-1]
 	data=data[cols]
 
-	data.to_csv('./dataset/'+name+'.csv',header=['reviews','sentiment'],index=False,encoding = "utf-8")
+	data.to_csv('dataset/'+name+'.csv',header=['reviews','sentiment'],index=False,encoding = "utf-8")
 
 def splitfiles(mode):
 	if mode=='bin':
-		data = pd.read_csv("./dataset/reviewstarsbin.csv")
-
-
-
-
+		data = pd.read_csv('dataset/reviewstarsbin.csv')
+  
 		data['sentiment'].to_csv('starsbin.csv',header=['sentiment'],index=False)
 
 		data['reviews'].to_csv('reviews.csv',header=['reviews'],index=False,encoding = "utf-8")
 	else:
-		data = pd.read_csv("./dataset/reviewstarsnonbin.csv")
-
-
-
+		data = pd.read_csv('dataset/reviewstarsnonbin.csv')
 
 		data['sentiment'].to_csv('stars.csv',header=['sentiment'],index=False)
 
@@ -109,7 +104,7 @@ def zerolistmaker(n):
 h = Hunspell('el_GR')
 #if not a new .csv is downloaded and in folder
 #clear it and fix it
-if not(os.path.isfile('./dataset/reviewstarsbin.csv')): 
+if not(os.path.isfile('dataset/reviewstarsbin.csv')): 
 	clearfiles(mode)
 	print('Cleared')
 #run split to have both reviews and stars .csv
@@ -135,7 +130,7 @@ with open(stars_name, newline='\n') as g:
 	
 
 #pharm lexicon
-with open('finallexformysenti\\EmotionLookupTable.txt', 'r', encoding='utf-8')  as file:    terms_list = file.read().splitlines()
+with open('finallexformysenti/EmotionLookupTable.txt', 'r', encoding='utf-8')  as file:    terms_list = file.read().splitlines()
 
 word=[] #2 arrays for word and score
 score=[]
@@ -154,7 +149,7 @@ for i in range(0,len(word)):
 
 
 ######emoticontable same as pharm######
-with open('finallexformysenti\\EmoticonLookupTable.txt', 'r') as file:    emotic_list = file.read().splitlines()
+with open('finallexformysenti/EmoticonLookupTable.txt', 'r') as file:    emotic_list = file.read().splitlines()
 emot=[]
 scorem=[]
 for te in emotic_list:	
@@ -166,7 +161,7 @@ for i in range(0,len(scorem)):
 
 
 #boosterwords same as before
-with open('finallexformysenti\\BoosterWordList.txt', 'r', encoding='utf-8') as file:    terms_listbo = file.read().splitlines()
+with open('finallexformysenti/BoosterWordList.txt', 'r', encoding='utf-8') as file:    terms_listbo = file.read().splitlines()
 
 boost=[]
 scorebo=[]
@@ -181,7 +176,7 @@ for i in range(0,len(boost)):
 	boost[i]=clean_accent(boost[i].lower())
 
 #negwords
-with open('finallexformysenti\\NegatingWordList.txt', 'r', encoding='utf-8') as file:    terms_listneg = file.read().splitlines()
+with open('finallexformysenti/NegatingWordList.txt', 'r', encoding='utf-8') as file:    terms_listneg = file.read().splitlines()
 neg=[]
 for tn in terms_listneg:
 	tn = tn.split("	")
@@ -204,7 +199,7 @@ i=0 #an i
 stikshh=['.',' ','-','_','+','w','°','?',';','!',':','(',')'] #unwanted chars
 stiksh=['.',' ','-','_','+','w','°','?',';','!','0','1','2','3','4','5','6','7','8','9'] #unwanted chars that may repeat
 summinmax=[0]
-with open('dataset\\finalgreekmysenti'+mode+'.csv', 'w',newline='',encoding='utf8') as f: #results csv
+with open('dataset/finalgreekmysenti'+mode+'.csv', 'w',newline='',encoding='utf8') as f: #results csv
 	writer = csv.writer(f, delimiter=',')
 	writer.writerow(('review','mysentiment','min','max','sentiment')) #row titles
 	for review in df: #every review
@@ -319,7 +314,7 @@ with open('dataset\\finalgreekmysenti'+mode+'.csv', 'w',newline='',encoding='utf
 	writer.writerows(export_data)			
 
 #######Prediction accuracy############################################################
-dataset='./dataset/finalgreekmysenti'+mode+'.csv'
+dataset='dataset/finalgreekmysenti'+mode+'.csv'
 
 df=pd.read_csv(dataset)
 
