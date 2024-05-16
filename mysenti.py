@@ -62,7 +62,7 @@ def splitfiles(mode):
 	else:
 		data = pd.read_csv('dataset/reviewstarsnonbin.csv')
 
-		data['sentiment'].to_csv('stars.csv',header=['sentiment'],index=False)
+		data['sentiment'].to_csv('starsnonbin.csv',header=['sentiment'],index=False)
 
 		data['reviews'].to_csv('reviews.csv',header=['reviews'],index=False,encoding = "utf-8")		
 
@@ -104,7 +104,7 @@ def zerolistmaker(n):
 h = Hunspell('el_GR')
 #if not a new .csv is downloaded and in folder
 #clear it and fix it
-if not(os.path.isfile('dataset/reviewstarsbin.csv')): 
+if not(os.path.isfile('dataset/reviewstars'+mode+'.csv')): 
 	clearfiles(mode)
 	print('Cleared')
 #run split to have both reviews and stars .csv
@@ -112,7 +112,7 @@ splitfiles(mode)
 if mode=='nonbin':
 	#File with reviews
 	file_name="reviews.csv"
-	stars_name="stars.csv"
+	stars_name="starsnonbin.csv"
 else:
 	file_name="reviews.csv"
 	stars_name="starsbin.csv"
