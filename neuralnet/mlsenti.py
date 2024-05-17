@@ -1,3 +1,5 @@
+# may need to do pip install pydot-ng and pip install graphvizfor it to work
+
 import pandas as pd
 import numpy as np
 import tensorflow
