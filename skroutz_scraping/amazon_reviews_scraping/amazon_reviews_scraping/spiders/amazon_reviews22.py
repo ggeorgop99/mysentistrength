@@ -26,15 +26,14 @@ class AmazonReviewsSpider(scrapy.Spider):
     df = pd.read_csv(file_name, sep="\t or ,")
     df.drop_duplicates(subset=None, inplace=True)
     df = df["link"].tolist()
-    print(df)
-    print(df.to_string())
-    print("###############################")
-    print(len(df))
-    # Creating list of urls to be scraped by appending page number a the end of base url
+    # print(df)
+    # print(df.to_string())
+    # print("###############################")
+    # print(len(df))
+    # Creating list of urls to be scraped by appending page number at the end of base url
     for i in range(1, len(df)):
         start_urls.append(myBaseUrl + df[i])
         
-    #[WIP] added "start requests" to add headers to avoid 403 error
     def start_requests(self):
         self.settings = get_project_settings()  
         headers = {        
@@ -59,7 +58,6 @@ class AmazonReviewsSpider(scrapy.Spider):
             yield Request(
                 self.start_urls[i], callback=self.parse, headers=headers
             )  
-    #END OF WIP
     # Defining a Scrapy parser
     def parse(self, response):
         topic = response.css("#nav")

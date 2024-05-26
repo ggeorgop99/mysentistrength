@@ -5,21 +5,14 @@ from scrapy.exceptions import DropItem
 from scrapy.exceptions import CloseSpider
 from scrapy.utils.project import get_project_settings
 
-# file_name_output = "my_file_without_dupes.csv"
-# URL = "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?order_by=pricevat&order_dir=asc&page=%d"
-
 URL = "https://www.skroutz.gr/c/1105/tablet.html?page=%d"
-
 
 class skroutzItem(Item):
     link = Field()
 
-
 class MySpider(scrapy.Spider):
     name = "skroutz"
     allowed_domains = ["www.skroutz.gr"]
-    #below are a WIP 
-    #add headers and print settings to try to fix 403 error.
     def start_requests(self):
         self.settings = get_project_settings()
         print("Existing settings: %s" % self.settings.attributes.keys())   
@@ -41,7 +34,8 @@ class MySpider(scrapy.Spider):
             }
         
         #add above headers in the request
-        for i in range(12):
+        #prin to range itan 12, dokimes gia parapanw selides
+        for i in range(24):
             yield Request(
                 URL % i, callback=self.parse, headers=headers
             )  # ,meta={"proxy": "http://200.29.237.154:999"})
