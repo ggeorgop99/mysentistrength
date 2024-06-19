@@ -9,7 +9,6 @@ import os
 mode='bin'
 
 data = pd.read_csv("../mysentistrength/dataset/dirtyreviews.csv",encoding = "utf-8")
-print('test')
 data=data.drop('topic', axis=1)
 data=data.drop('title', axis=1)
 

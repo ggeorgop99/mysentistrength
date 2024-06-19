@@ -9,39 +9,42 @@ import seaborn as sns
 from sklearn.feature_extraction.text import CountVectorizer
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model, to_categorical
+from tensorflow.keras.callbacks import EarlyStopping
 import argparse
-
-# Define the command-line arguments
-parser = argparse.ArgumentParser(description='Train a sentiment analysis model.')
-parser.add_argument('--mode', type=str, required=True, help='Mode of the model: nonbin or bin')
-parser.add_argument('--mode1', type=str, required=True, help='Train or graphs')
-args = parser.parse_args()
-
-# Access the mode arguments
-mode = args.mode
-mode1 = args.mode1
-
+import os
 
 def plot_sentiment_distribution(Y):
     unique_sentiments, counts = np.unique(Y, return_counts=True)
-
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(10, 6))
     ax = sns.barplot(x=unique_sentiments, y=counts, palette="viridis")
     plt.title("Distribution of Sentiments", fontsize=16)
     plt.xlabel("Sentiment", fontsize=14)
     plt.ylabel("Count", fontsize=14)
-    
     for i, count in enumerate(counts):
         ax.text(i, count, str(count), ha='center', va='bottom', fontsize=12)
-
     plt.show()
+    
+# Define the command-line arguments
+parser = argparse.ArgumentParser(description='Train a sentiment analysis model.')
+parser.add_argument('--mode', type=str, required=True, choices=['bin', 'nonbin'], help='Mode of the model: nonbin or bin')
+parser.add_argument('--mode1', type=str, required=True, choices=['train', 'graphs'], help='Operation mode: train or graphs')
+parser.add_argument('--file_name', type=str, required=True, help='Name of file to preprocess')
+args = parser.parse_args()
+
+# Access the mode arguments
+mode = args.mode
+mode1 = args.mode1
+file_name = args.file_name
+dir_path = f"savedmodel_{mode}"
+model_path = f"{dir_path}/savedmodel_{file_name}_{mode}"
+dataset_path = f"preprocessed_datasets/{file_name}_{mode}.csv"
 
 if mode1 == "train":
-    dataset = f"reviewstars{mode}.csv"
+    dataset = f"{dataset_path}"
     df = pd.read_csv(dataset, usecols=[0, 1])
     # sort for easier normalisation
     df = df.sort_values(by=["sentiment"], ascending=True)
@@ -85,7 +88,8 @@ if mode1 == "train":
     vec = CountVectorizer()
     vec.fit(X_train.astype("U"))
     
-    with open(f'savedmodel{mode}/count_vectorizer.pkl', 'wb') as f:
+    os.makedirs(f'{dir_path}', exist_ok=True)
+    with open(f'{dir_path}/count_vectorizer_{file_name}_{mode}.pkl', 'wb') as f:
         pickle.dump(vec, f)
     
     x_train = vec.transform(X_train.astype("U"))
@@ -99,27 +103,32 @@ if mode1 == "train":
 
     model = Sequential([
         Dense(16, input_dim=x_train.shape[1], activation="relu"),
+        Dropout(0.5),  # Add dropout for regularization
         Dense(16, activation="relu"),
+        Dropout(0.5),  # Add dropout for regularization
         Dense(outp_node, activation="sigmoid")
     ])
-    model.compile(loss=loss_func, optimizer=Adam(), metrics=["accuracy"])
+    model.compile(loss=loss_func, optimizer=Adam(), metrics=["accuracy", tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
     model.summary()
     
+    early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+
     history = model.fit(
         x_train, Y_train,
         validation_data=(x_test, Y_test),
         epochs=100,
         verbose=True,
         batch_size=16,
+        callbacks=[early_stopping]
     )
 
-    model.save(f"savedmodel{mode}/savedmodel{mode}.h5")
-    model.save(f"savedmodel{mode}/savedmodel{mode}.keras")
-    np.save(f"savedmodel{mode}/savedmodel{mode}.npy", history.history)
+    model.save(f"{model_path}.h5")
+    model.save(f"{model_path}.keras")
+    np.save(f"{model_path}.npy", history.history)
 
 if mode1 == "graphs":
-    model = tf.keras.models.load_model(f"savedmodel{mode}/savedmodel{mode}.keras")
-    history = np.load(f"savedmodel{mode}/savedmodel{mode}.npy", allow_pickle=True).item()
+    model = tf.keras.models.load_model(f"{model_path}.keras")
+    history = np.load(f"{model_path}.npy", allow_pickle=True).item()
     
     plot_model(model, to_file=f'model_plot_{mode}.png', show_shapes=True, show_layer_names=True)
     
@@ -136,6 +145,22 @@ if mode1 == "graphs":
     plt.plot(history["loss"], label='Train Loss')
     plt.plot(history["val_loss"], label='Validation Loss')
     plt.title("Model Loss")
+    plt.ylabel("Loss")
+    plt.xlabel("Epoch")
+    plt.legend(loc="upper left")
+    plt.show()
+    
+    plt.plot(history["precision"], label='Train Precision')
+    plt.plot(history["val_precision"], label='Validation Precision')
+    plt.title("Model Precision")
+    plt.ylabel("Loss")
+    plt.xlabel("Epoch")
+    plt.legend(loc="upper left")
+    plt.show()
+    
+    plt.plot(history["recall"], label='Train Recall')
+    plt.plot(history["val_recall"], label='Validation Recall')
+    plt.title("Model Recall")
     plt.ylabel("Loss")
     plt.xlabel("Epoch")
     plt.legend(loc="upper left")
