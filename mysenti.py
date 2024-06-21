@@ -148,7 +148,7 @@ for i in range(0,len(word)):
 
 
 
-######emoticontable same as pharm######
+# emoticontable same as pharm
 with open('finallexformysenti/EmoticonLookupTable.txt', 'r') as file:    emotic_list = file.read().splitlines()
 emot=[]
 scorem=[]
@@ -160,7 +160,7 @@ for i in range(0,len(scorem)):
 	scorem[i]=int(scorem[i])	
 
 
-#boosterwords same as before
+# boosterwords same as before
 with open('finallexformysenti/BoosterWordList.txt', 'r', encoding='utf-8') as file:    terms_listbo = file.read().splitlines()
 
 boost=[]
@@ -313,7 +313,7 @@ with open('dataset/finalgreekmysenti'+mode+'.csv', 'w',newline='',encoding='utf8
 	export_data = zip_longest(*t) #zip and write
 	writer.writerows(export_data)			
 
-#######Prediction accuracy############################################################
+#Prediction accuracy
 dataset='dataset/finalgreekmysenti'+mode+'.csv'
 
 df=pd.read_csv(dataset)

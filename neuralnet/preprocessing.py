@@ -7,7 +7,20 @@ import spacy
 from nltk.tokenize import RegexpTokenizer
 import numpy as np
 import os
+from hunspell import Hunspell
 
+# hspell = hunspell.HunSpell('/usr/share/hunspell/el_GR.dic', '/usr/share/hunspell/el_GR.aff')
+hspell = Hunspell('el_GR')
+
+def spell_check(text):
+    corrected_text = []
+    for word in text.split():
+        if hspell.spell(word):
+            corrected_text.append(word)
+        else:
+            suggestions = hspell.suggest(word)
+            corrected_text.append(suggestions[0] if suggestions else word)
+    return ' '.join(corrected_text)
 
 def lemmatize(text):
     doc = nlp(str(text))
@@ -81,6 +94,9 @@ if file_name == "pharm":
     sentiment_mapping = sentiment_mapping_bin if mode == "bin" else sentiment_mapping_nonbin
     df["sentiment"] = df["sentiment"].map(sentiment_mapping)
 
+# Apply spellchecking
+df["reviews"] = df["reviews"].apply(spell_check)
+
 # Apply lemmatization and preprocessing
 df["text_lemma"] = df["reviews"].apply(lemmatize)
 df["text_proc"] = df["text_lemma"].apply(lambda x: preprocess_text(x, stopwords))
@@ -93,8 +109,9 @@ df = df[df["text_proc"].astype(bool)]
 df = df.drop(columns=["text_lemma"])
 df['reviews'] = df['text_proc']
 df = df.drop(columns=['text_proc'])
-df= df.drop(columns=['Unnamed: 2'])
-#df.dropna(axis=1, how='all')
+# df= df.drop(columns=['Unnamed: 2'])
+df.dropna(axis=1, how='all')
+print(df.head())
 
 # Save the modified DataFrame to a new CSV file
 os.makedirs("preprocessed_datasets", exist_ok=True)
