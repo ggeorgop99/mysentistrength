@@ -86,15 +86,6 @@ def preprocess_text(text, stopwords):
 # Read the CSV file
 df = pd.read_csv(f"datasets/{file_name}_{mode}.csv")
 
-if file_name == "pharm":
-    df = df[["text", "sentiment"]]  
-    df = df.rename(columns={"text": "reviews"})
-    
-    sentiment_mapping_bin = {"negative": 0, "neutral": 1, "positive": 1}
-    sentiment_mapping_nonbin = {"negative": -1, "neutral": 0, "positive": 1}
-    sentiment_mapping = sentiment_mapping_bin if mode == "bin" else sentiment_mapping_nonbin
-    df["sentiment"] = df["sentiment"].map(sentiment_mapping)
-
 # Apply spellchecking
 df["reviews"] = df["reviews"].apply(spell_check)
 
@@ -110,7 +101,8 @@ df = df[df["text_proc"].astype(bool)]
 df = df.drop(columns=["text_lemma"])
 df['reviews'] = df['text_proc']
 df = df.drop(columns=['text_proc'])
-df= df.drop(columns=['Unnamed: 2'])
+if 'Unnamed: 2' in df.columns:
+    df= df.drop(columns=['Unnamed: 2'])
 df.dropna(axis=1, how='all')
 print(df.head())
 
