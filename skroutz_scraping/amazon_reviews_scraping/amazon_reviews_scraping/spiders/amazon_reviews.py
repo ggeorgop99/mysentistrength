@@ -4,8 +4,12 @@ from scrapy.item import Item, Field
 from scrapy.exceptions import DropItem
 from scrapy.exceptions import CloseSpider
 from scrapy.utils.project import get_project_settings
+from rotating_proxies.middlewares import RotatingProxyMiddleware
+from scrapy_user_agents.middlewares import RandomUserAgentMiddleware
+import random
 
-URL = "https://www.skroutz.gr/c/1105/tablet.html?page=%d"
+# URL = "https://www.skroutz.gr/c/1105/tablet.html?page=%d"
+URL = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
 
 class skroutzItem(Item):
     link = Field()
@@ -14,7 +18,6 @@ class MySpider(scrapy.Spider):
     name = "skroutz"
     allowed_domains = ["www.skroutz.gr"]
     def start_requests(self):
-        self.settings = get_project_settings()
         print("Existing settings: %s" % self.settings.attributes.keys())   
         headers = {        
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',        
@@ -30,12 +33,13 @@ class MySpider(scrapy.Spider):
                 'Sec-Fetch-User': '?1',        
                 'TE': 'trailers',        
                 'Upgrade-Insecure-Requests': '1',        
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'        
+                'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:124.0) Gecko/20100101 Firefox/124.0'
+                # 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'        
             }
         
         #add above headers in the request
-        #prin to range itan 12, dokimes gia parapanw selides
-        for i in range(24):
+        #initial range was 12, trying to increase it
+        for i in range(32, 36):
             yield Request(
                 URL % i, callback=self.parse, headers=headers
             )  # ,meta={"proxy": "http://200.29.237.154:999"})
@@ -43,14 +47,14 @@ class MySpider(scrapy.Spider):
         # print("Existing settings: %s" % self.settings.attributes.keys())   
     #END OF WIP
     def parse(self, response):
-        urlss = response.css("#sku-list")
-        nikos = urlss.css(".js-sku-link")
-        if not urlss:
+        urls = response.css("#sku-list")
+        new_urls = urls.css(".js-sku-link")
+        if not urls:
             raise CloseSpider("No more pages")
         items = skroutzItem()
         items["link"] = []
 
-        for urls in nikos:
+        for urls in new_urls:
             items["link"] = urls.xpath("@href").extract()
             yield items
 
