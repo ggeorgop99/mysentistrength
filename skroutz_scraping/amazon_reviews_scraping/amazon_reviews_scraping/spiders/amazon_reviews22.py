@@ -24,6 +24,7 @@ class AmazonReviewsSpider(scrapy.Spider):
 
     df = pd.read_csv(file_name, sep="\t or ,")
     df.drop_duplicates(subset=None, inplace=True)
+    print(df.head())
     df = df["link"].tolist()
     # print(df)
     # print(df.to_string())
@@ -35,6 +36,7 @@ class AmazonReviewsSpider(scrapy.Spider):
         
     def start_requests(self):
         self.settings = get_project_settings()  
+        print(self.settings.attributes.keys())
         headers = {        
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',        
                 'Accept-Encoding': 'gzip, deflate, br',        

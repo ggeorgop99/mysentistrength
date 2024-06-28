@@ -11,13 +11,16 @@ class SkroutzItem(Item):
 class AmazonReviewsSpider(scrapy.Spider):
     name = "amazon_reviews"
     allowed_domains = ["skroutz.gr"]
-    base_url = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
+    # URL = "https://www.skroutz.gr/c/1105/tablet.html?page=%d" 
+    # URL = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
+    URL = "https://www.skroutz.gr/c/40/kinhta-thlefwna/f/852219/Smartphones.html?page=%d"
     
     def __init__(self, *args, **kwargs):
         super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
         self.settings = get_project_settings()  # Load settings
 
     def start_requests(self):
+        self.base_url = self.URL
         headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate, br',
@@ -31,17 +34,23 @@ class AmazonReviewsSpider(scrapy.Spider):
             yield Request(self.base_url % i, callback=self.parse, headers=headers)
 
     def parse(self, response):
-        urls = response.css("#sku-list")
+        urls = response.css("#sku-ist")
         new_urls = urls.css(".js-sku-link")
         if not urls:
             raise CloseSpider("No more pages")
         
-        items = []
-        for url in new_urls:
-            link = url.xpath("@href").extract_first()
-            if link:
-                items.append({'link': link})
+        items = SkroutzItem()
+        items["link"] = []
+
+        for urls in new_urls:
+            items["link"] = urls.xpath("@href").extract()
+            yield items
+        # items = []
+        # for url in new_urls:
+        #     link = url.xpath("@href").extract_first()
+        #     if link:
+        #         items.append({'link': link})
         
-        if items:
-            df = pd.DataFrame(items)
-            df.to_csv("links.csv", mode='a', index=False, header=False)
+        # if items:
+        #     df = pd.DataFrame(items)
+        #     df.to_csv("links.csv", mode='a', index=False, header=False)

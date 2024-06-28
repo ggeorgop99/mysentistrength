@@ -21,8 +21,8 @@ ROBOTSTXT_OBEY = False
 CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
-DOWNLOAD_DELAY = 2  # Add a delay to prevent getting banned
-RANDOMIZE_DOWNLOAD_DELAY = True
+DOWNLOAD_DELAY = 4  # Add a delay to prevent getting banned
+# RANDOMIZE_DOWNLOAD_DELAY = True
 
 # Configure concurrent requests per domain and per IP
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
@@ -68,7 +68,7 @@ PROXY_MODE = 0
 
 # Enable AutoThrottle
 AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_START_DELAY = 5
 AUTOTHROTTLE_MAX_DELAY = 60
 AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 AUTOTHROTTLE_DEBUG = False

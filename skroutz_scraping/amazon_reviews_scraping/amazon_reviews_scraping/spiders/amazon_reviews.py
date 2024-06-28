@@ -9,7 +9,8 @@ from scrapy_user_agents.middlewares import RandomUserAgentMiddleware
 import random
 
 # URL = "https://www.skroutz.gr/c/1105/tablet.html?page=%d"
-URL = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
+# URL = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
+URL = "https://www.skroutz.gr/c/40/kinhta-thlefwna/f/852219/Smartphones.html?page=%d"
 
 class skroutzItem(Item):
     link = Field()
@@ -39,7 +40,7 @@ class MySpider(scrapy.Spider):
         
         #add above headers in the request
         #initial range was 12, trying to increase it
-        for i in range(32, 36):
+        for i in range(1, 10):
             yield Request(
                 URL % i, callback=self.parse, headers=headers
             )  # ,meta={"proxy": "http://200.29.237.154:999"})
