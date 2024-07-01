@@ -13,7 +13,7 @@ class AmazonReviewsSpider(scrapy.Spider):
     file_name = "links.csv"
 
     # Spider name
-    name = "amazon_reviews"
+    name = "skroutz22"
 
     # Domain names to scrape
     allowed_domains = ["skroutz.gr"]
@@ -26,10 +26,6 @@ class AmazonReviewsSpider(scrapy.Spider):
     df.drop_duplicates(subset=None, inplace=True)
     print(df.head())
     df = df["link"].tolist()
-    # print(df)
-    # print(df.to_string())
-    # print("###############################")
-    # print(len(df))
     # Creating list of urls to be scraped by appending page number at the end of base url
     for i in range(1, len(df)):
         start_urls.append(myBaseUrl + df[i])

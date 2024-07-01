@@ -10,14 +10,58 @@ class AmazonReviewsSpider(scrapy.Spider):
     allowed_domains = ["skroutz.gr"]
     myBaseUrl = "https://www.skroutz.gr"
     start_urls = []
-
-    # Load settings
-    custom_settings = get_project_settings()
-
     file_name = "links.csv"
     
+    custom_settings = {
+        'BOT_NAME': 'skroutz_reviews_scraping',
+        'SPIDER_MODULES': ['amazon_reviews_scraping.spiders'],
+        'NEWSPIDER_MODULE': 'amazon_reviews_scraping.spiders',
+        'ROBOTSTXT_OBEY': False,
+        'CONCURRENT_REQUESTS': 1,
+        'DOWNLOAD_DELAY': 4,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+        'CONCURRENT_REQUESTS_PER_IP': 1,
+        'RETRY_ENABLED': True,
+        'RETRY_TIMES': 10,
+        'RETRY_HTTP_CODES': [429, 500, 502, 503, 504, 522, 524, 408],
+        'COOKIES_ENABLED': False,
+        'TELNETCONSOLE_ENABLED': False,
+        'DEFAULT_REQUEST_HEADERS': {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en',
+        },
+        'DOWNLOADER_MIDDLEWARES': {
+            'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+            'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+            'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
+            # 'scrapy_proxies.RandomProxy': 100,
+            # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
+        },
+        # 'PROXY_LIST': 'amazon_reviews_scraping/amazon_reviews_scraping/spiders/proxies_list.txt',
+        # 'PROXY_MODE': 0,
+        'AUTOTHROTTLE_ENABLED': True,
+        'AUTOTHROTTLE_START_DELAY': 5,
+        'AUTOTHROTTLE_MAX_DELAY': 200,
+        'AUTOTHROTTLE_TARGET_CONCURRENCY': 1.0,
+        'AUTOTHROTTLE_DEBUG': False,
+        'HTTPCACHE_ENABLED': True,
+        'HTTPCACHE_EXPIRATION_SECS': 0,
+        'HTTPCACHE_DIR': 'httpcache',
+        'HTTPCACHE_IGNORE_HTTP_CODES': [],
+        'HTTPCACHE_STORAGE': 'scrapy.extensions.httpcache.FilesystemCacheStorage',
+    }
+
     def __init__(self, *args, **kwargs):
         super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
+        
+        # Load and print settings
+        # self.settings = get_project_settings()
+        # for key, value in self.settings.items():
+        #     print(f'{key}: {value}')
+            
+        for key, value in self.custom_settings.items():
+            self.logger.info(f'{key}: {value}')
+        
         self.df = pd.read_csv(self.file_name, sep="\t or ,")
         self.df.drop_duplicates(subset=None, inplace=True)
         self.df = self.df["link"].tolist()

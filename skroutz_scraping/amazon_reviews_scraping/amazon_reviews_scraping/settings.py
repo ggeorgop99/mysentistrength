@@ -21,7 +21,7 @@ ROBOTSTXT_OBEY = False
 CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
-DOWNLOAD_DELAY = 4  # Add a delay to prevent getting banned
+DOWNLOAD_DELAY = 10  # Add a delay to prevent getting banned
 # RANDOMIZE_DOWNLOAD_DELAY = True
 
 # Configure concurrent requests per domain and per IP
