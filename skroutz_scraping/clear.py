@@ -7,9 +7,9 @@ import argparse
 from utils import generate_unique_filename
 
 # Define the command-line arguments
-parser = argparse.ArgumentParser(description='Train a sentiment analysis model.')
-parser.add_argument('--mode', type=str, required=True, choices=['bin', 'nonbin'], help='Mode of the model: nonbin or bin')
-parser.add_argument('--file_name', type=str, required=True, help='Name of file to preprocess')
+parser = argparse.ArgumentParser(description='Clear the dataset.')
+parser.add_argument('--mode', type=str, required=True, choices=['bin', 'nonbin'], help='Mode of the dataset: nonbin or bin')
+parser.add_argument('--file_name', type=str, required=True, help='Name of file to clear')
 args = parser.parse_args()
 
 # Access the mode arguments
@@ -47,5 +47,4 @@ data['stars']=temp
 cols=data.columns.tolist()
 cols = cols[-1:] + cols[:-1]
 data=data[cols]
-file_path = os.path.join('../neuralnet/datasets', file_name)
-data.to_csv(name+'short.csv',header=['reviews','sentiment'],index=False,encoding = "utf-8")
+data.to_csv(name+'.csv',header=['reviews','sentiment'],index=False,encoding = "utf-8")

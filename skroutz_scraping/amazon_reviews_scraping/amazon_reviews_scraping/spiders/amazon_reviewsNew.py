@@ -15,7 +15,8 @@ class AmazonReviewsSpider(scrapy.Spider):
     # URL = "https://www.skroutz.gr/c/1865/gaming_pontikia.html?page=%d"
     # URL = "https://www.skroutz.gr/c/40/kinhta-thlefwna/f/852219/Smartphones.html?page=%d"
     # URL = "https://www.skroutz.gr/c/43/othones-upologiston.html?page=%d"
-    URL = "https://www.skroutz.gr/c/1850/Gaming_Headsets.html?page=%d" 
+    # URL = "https://www.skroutz.gr/c/1850/Gaming_Headsets.html?page=%d"
+    URL = "https://www.skroutz.gr/c/1413/playstation_4_games.html?page=%d" 
     custom_settings = {
     'BOT_NAME': 'skroutz_reviews_scraping',
     'SPIDER_MODULES': ['amazon_reviews_scraping.spiders'],
