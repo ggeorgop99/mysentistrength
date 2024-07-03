@@ -27,12 +27,24 @@ data=data.drop('title', axis=1)
 data=data.dropna()
 data=data.drop_duplicates(subset=['comment'], keep='first')
 data['stars'] = pd.to_numeric(data['stars'], errors='coerce')
+
+# Identify rows with invalid 'stars' values
+invalid_stars_rows = data[data['stars'].isna()]
+
+# Log the rows with invalid 'stars' values
+if not invalid_stars_rows.empty:
+    print("Rows with invalid 'stars' values that will be dropped:")
+    print(invalid_stars_rows)
+
 data = data.dropna(subset=['stars'])
 data['stars'] = data['stars'].astype(int)
+print(data.head())
+
 temp=[]
 temp=data['stars'].values.tolist()
 name=f'{file_name}_{mode}'
-print(data.head())
+
+
 if mode=='bin':
 	for i in range(0,len(data['stars'])):
 		if int(temp[i])<=3:
