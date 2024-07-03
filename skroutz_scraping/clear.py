@@ -1,10 +1,14 @@
 import pandas as pd
-import csv
-from itertools import zip_longest
-from difflib import SequenceMatcher
-import os
+# import csv
+# from itertools import zip_longest
+# from difflib import SequenceMatcher
+# import os
 import argparse
-from utils import generate_unique_filename
+# import sys
+
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# from utils import generate_unique_filename
+
 
 # Define the command-line arguments
 parser = argparse.ArgumentParser(description='Clear the dataset.')
@@ -16,18 +20,21 @@ args = parser.parse_args()
 mode = args.mode
 file_name = args.file_name
 
-data = pd.read_csv("../mysentistrength/dataset/dirtyreviews.csv",encoding = "utf-8")
+data = pd.read_csv("dirtyreviews2.csv",encoding = "utf-8")
+print(data.head())
 data=data.drop('topic', axis=1)
 data=data.drop('title', axis=1)
-
 data=data.dropna()
 data=data.drop_duplicates(subset=['comment'], keep='first')
+data['stars'] = pd.to_numeric(data['stars'], errors='coerce')
+data = data.dropna(subset=['stars'])
+data['stars'] = data['stars'].astype(int)
 temp=[]
 temp=data['stars'].values.tolist()
 name=f'{file_name}_{mode}'
+print(data.head())
 if mode=='bin':
 	for i in range(0,len(data['stars'])):
-		
 		if int(temp[i])<=3:
 			temp[i]=0;
 		else:
