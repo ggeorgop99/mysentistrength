@@ -14,7 +14,7 @@ from difflib import SequenceMatcher
 from hunspell import Hunspell
 import os
 
-mode='nonbin'
+mode='bin'
 
 def clearfiles(mode):
 	data = pd.read_csv('dataset/dirtyreviews.csv')
