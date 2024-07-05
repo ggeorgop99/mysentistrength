@@ -16,14 +16,15 @@ class AmazonReviewsSpider(scrapy.Spider):
     # URL = "https://www.skroutz.gr/c/40/kinhta-thlefwna/f/852219/Smartphones.html?page=%d"
     # URL = "https://www.skroutz.gr/c/43/othones-upologiston.html?page=%d"
     # URL = "https://www.skroutz.gr/c/1850/Gaming_Headsets.html?page=%d"
-    URL = "https://www.skroutz.gr/c/1413/playstation_4_games.html?page=%d" 
+    # URL = "https://www.skroutz.gr/c/1413/playstation_4_games.html?page=%d" 
+    URL = "https://www.skroutz.gr/c/772/akoystika.html?page=%d"
     custom_settings = {
     'BOT_NAME': 'skroutz_reviews_scraping',
     'SPIDER_MODULES': ['amazon_reviews_scraping.spiders'],
     'NEWSPIDER_MODULE': 'amazon_reviews_scraping.spiders',
     'ROBOTSTXT_OBEY': False,
     'CONCURRENT_REQUESTS': 1,
-    'DOWNLOAD_DELAY': 2,
+    'DOWNLOAD_DELAY': 4,
     'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
     'CONCURRENT_REQUESTS_PER_IP': 1,
     'RETRY_ENABLED': True,
@@ -73,7 +74,7 @@ class AmazonReviewsSpider(scrapy.Spider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'
         }
         
-        for i in range(1, 47):  # Adjust the range as needed
+        for i in range(1, 426):  # Adjust the range as needed
             yield Request(self.base_url % i, callback=self.parse, headers=headers)
 
 

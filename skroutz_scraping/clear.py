@@ -20,7 +20,7 @@ args = parser.parse_args()
 mode = args.mode
 file_name = args.file_name
 
-data = pd.read_csv("dirtyreviews2.csv",encoding = "utf-8")
+data = pd.read_csv("dirtyreviews.csv",encoding = "utf-8")
 print(data.head())
 data=data.drop('topic', axis=1)
 data=data.drop('title', axis=1)
