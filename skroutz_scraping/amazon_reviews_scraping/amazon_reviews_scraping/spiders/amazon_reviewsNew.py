@@ -62,7 +62,7 @@ class AmazonReviewsSpider(scrapy.Spider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'
         }
         
-        for i in range(485, 2401):  
+        for i in range(504, 2401):  
             yield Request(self.base_url % i, callback=self.parse, headers=headers)
 
     def parse(self, response):
