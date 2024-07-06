@@ -18,7 +18,7 @@ class AmazonReviewsSpider(scrapy.Spider):
         'NEWSPIDER_MODULE': 'amazon_reviews_scraping.spiders',
         'ROBOTSTXT_OBEY': False,
         'CONCURRENT_REQUESTS': 1,
-        'DOWNLOAD_DELAY': 2,
+        'DOWNLOAD_DELAY': 1,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
         'RETRY_ENABLED': True,
@@ -62,7 +62,7 @@ class AmazonReviewsSpider(scrapy.Spider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'
         }
         
-        for i in range(48, 400):  # Adjust the range as needed
+        for i in range(485, 2401):  
             yield Request(self.base_url % i, callback=self.parse, headers=headers)
 
     def parse(self, response):
@@ -74,7 +74,6 @@ class AmazonReviewsSpider(scrapy.Spider):
             self.items.append({"link": url})
 
     def close(self, reason):
-        # Save all collected links to a CSV file
         df = pd.DataFrame(self.items)
         df.drop_duplicates(subset=None, inplace=True)
         df.to_csv('links.csv', index=False)
