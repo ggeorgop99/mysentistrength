@@ -18,7 +18,7 @@ class AmazonReviewsSpider(scrapy.Spider):
         'NEWSPIDER_MODULE': 'amazon_reviews_scraping.spiders',
         'ROBOTSTXT_OBEY': False,
         'CONCURRENT_REQUESTS': 1,
-        'DOWNLOAD_DELAY': 4,
+        'DOWNLOAD_DELAY': 2,
         'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
         'CONCURRENT_REQUESTS_PER_IP': 1,
         'RETRY_ENABLED': True,
