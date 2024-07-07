@@ -14,7 +14,6 @@ class AmazonReviewsSpider(scrapy.Spider):
     # URL = "https://www.skroutz.gr/c/5309/papoutsia.html?page=%d" 
     # URL = 'https://www.skroutz.gr/m.Nike.1464.html?page=%d'
     URL = 'https://www.skroutz.gr/c/535/gynaikeies-mplouzes.html?page=%d'
-    # we want 1070 more pages
 
     custom_settings = {
         'BOT_NAME': 'skroutz_reviews_scraping',
