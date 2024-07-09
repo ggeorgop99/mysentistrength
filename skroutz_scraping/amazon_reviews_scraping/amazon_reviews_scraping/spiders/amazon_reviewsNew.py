@@ -13,7 +13,9 @@ class AmazonReviewsSpider(scrapy.Spider):
     #page 718
     # URL = "https://www.skroutz.gr/c/5309/papoutsia.html?page=%d" 
     # URL = 'https://www.skroutz.gr/m.Nike.1464.html?page=%d'
-    URL = 'https://www.skroutz.gr/c/535/gynaikeies-mplouzes.html?page=%d'
+    # URL = 'https://www.skroutz.gr/c/535/gynaikeies-mplouzes.html?page=%d'
+    # URL = "https://www.skroutz.gr/c/538/gynaikeia-magio.html?page=%d"
+    URL = "https://www.skroutz.gr/c/5307/gynaikeies-tsades-portofolia.html?page=%d"
 
     custom_settings = {
         'BOT_NAME': 'skroutz_reviews_scraping',
@@ -65,7 +67,7 @@ class AmazonReviewsSpider(scrapy.Spider):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'
         }
         
-        for i in range(1, 1200):  
+        for i in range(1, 1000):  
             yield Request(self.base_url % i, callback=self.parse, headers=headers)
 
     def parse(self, response):
