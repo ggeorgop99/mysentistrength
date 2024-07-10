@@ -14,7 +14,6 @@ class AmazonReviewsSpider(scrapy.Spider):
     # URL = "https://www.skroutz.gr/c/5309/papoutsia.html?page=%d" 
     # URL = 'https://www.skroutz.gr/m.Nike.1464.html?page=%d'
     # URL = 'https://www.skroutz.gr/c/535/gynaikeies-mplouzes.html?page=%d'
-    # URL = "https://www.skroutz.gr/c/538/gynaikeia-magio.html?page=%d"
     # URL = "https://www.skroutz.gr/c/5307/gynaikeies-tsades-portofolia.html?page=%d"
     URL = "https://www.skroutz.gr/c/579/thikes-kinhtwn-thlefwnwn.html?page=%d"
 
