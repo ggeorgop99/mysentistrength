@@ -1,8 +1,8 @@
 import scrapy
 from scrapy.http import Request
 from scrapy.item import Item, Field
-from scrapy.exceptions import CloseSpider
 import pandas as pd
+import os
 
 class SkroutzItem(Item):
     link = Field()
@@ -10,12 +10,20 @@ class SkroutzItem(Item):
 class AmazonReviewsSpider(scrapy.Spider):
     name = "amazon_reviews"
     allowed_domains = ["skroutz.gr"]
-    #page 718
-    # URL = "https://www.skroutz.gr/c/5309/papoutsia.html?page=%d" 
-    # URL = 'https://www.skroutz.gr/m.Nike.1464.html?page=%d'
-    # URL = 'https://www.skroutz.gr/c/535/gynaikeies-mplouzes.html?page=%d'
-    # URL = "https://www.skroutz.gr/c/5307/gynaikeies-tsades-portofolia.html?page=%d"
-    URL = "https://www.skroutz.gr/c/579/thikes-kinhtwn-thlefwnwn.html?page=%d"
+
+    # Define a list of base URLs for different categories
+    base_urls = [
+        "https://www.skroutz.gr/c/246/othones-provolis-projector.html?page=%d",
+        "https://www.skroutz.gr/c/1388/presenters.html?page=%d",
+        "https://www.skroutz.gr/c/487/baseis-protzektora.html?page=%d",
+        "https://www.skroutz.gr/c/488/tsantes-protzektora.html?page=%d",
+        "https://www.skroutz.gr/c/486/lampes-protzektora.html?page=%d",
+        "https://www.skroutz.gr/c/1803/systimata_lipsis.html?page=%d",
+        "https://www.skroutz.gr/c/1804/syskeyes_multimedia.html?page=%d",
+        "https://www.skroutz.gr/c/1970/kalodia_eikonas.html?page=%d",
+        "https://www.skroutz.gr/c/6/diafora_eikonas.html?page=%d",
+        "https://www.skroutz.gr/c/1802/forites_syskeyes_eikonas.html?page=%d"
+    ]
 
     custom_settings = {
         'BOT_NAME': 'skroutz_reviews_scraping',
@@ -55,9 +63,9 @@ class AmazonReviewsSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
         self.items = []
+        self.current_url_index = 0  # Track the current URL index
 
     def start_requests(self):
-        self.base_url = self.URL
         headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate, br',
@@ -66,19 +74,43 @@ class AmazonReviewsSpider(scrapy.Spider):
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0'
         }
-        
-        for i in range(1, 200):  
-            yield Request(self.base_url % i, callback=self.parse, headers=headers)
+
+        # Start with the first URL in the list
+        yield Request(self.base_urls[self.current_url_index] % 1, callback=self.parse, headers=headers, meta={'page': 1})
 
     def parse(self, response):
+        base_url = self.base_urls[self.current_url_index]
+        page = response.meta['page']
+        
         new_urls = response.css(".js-sku-link::attr(href)").extract()
         if not new_urls:
-            raise CloseSpider("No more pages")
+            self.logger.info(f"No more pages for {base_url}")
+            self.current_url_index += 1  # Move to the next URL
+            if self.current_url_index < len(self.base_urls):
+                # Start the next URL from page 1
+                next_base_url = self.base_urls[self.current_url_index]
+                yield Request(next_base_url % 1, callback=self.parse, headers=response.request.headers, meta={'page': 1})
+            return
         
         for url in new_urls:
             self.items.append({"link": url})
 
+        # Schedule the next page
+        next_page = page + 1
+        yield Request(base_url % next_page, callback=self.parse, headers=response.request.headers, meta={'page': next_page})
+
     def close(self, reason):
-        df = pd.DataFrame(self.items)
-        df.drop_duplicates(subset=None, inplace=True)
-        df.to_csv('links.csv', index=False)
+        # Convert the items to a DataFrame
+        df_new = pd.DataFrame(self.items)
+        df_new.drop_duplicates(subset=None, inplace=True)
+        
+        # Check if the file exists
+        file_path = 'links.csv'
+        if os.path.exists(file_path):
+            df_existing = pd.read_csv(file_path)
+            # Append new items to existing ones
+            df_combined = pd.concat([df_existing, df_new]).drop_duplicates().reset_index(drop=True)
+            df_combined.to_csv(file_path, index=False)
+        else:
+            # Save new items as the file does not exist
+            df_new.to_csv(file_path, index=False)
