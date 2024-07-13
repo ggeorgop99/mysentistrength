@@ -13,7 +13,20 @@ class AmazonReviewsSpider(scrapy.Spider):
 
     # Define a list of base URLs for different categories
     base_urls = [
-        "https://www.skroutz.gr/c/1802/forites_syskeyes_eikonas.html?page=%d"
+        "https://www.skroutz.gr/c/752/game-console-spare-parts.html?page=%d",
+        "https://www.skroutz.gr/c/2579/virtual-reality-headsets.html?page=%d",
+        "https://www.skroutz.gr/c/109/Accessories.html?page=%d",
+        "https://www.skroutz.gr/c/1876/Character_Figures.html?page=%d",
+        "https://www.skroutz.gr/c/875/video_game_cards.html?page=%d",
+        "https://www.skroutz.gr/c/2956/karekles-gaming.html?page=%d",
+        "https://www.skroutz.gr/c/108/game_consoles.html?page=%d",
+        "https://www.skroutz.gr/c/1867/gaming_peripherals.html?page=%d",
+        "https://www.skroutz.gr/c/4968/Headset-Stand.html?page=%d",
+        "https://www.skroutz.gr/c/2507/diafora-perifereiaka-gaming.html?page=%d",
+        "https://www.skroutz.gr/c/664/wheels.html?page=%d",
+        "https://www.skroutz.gr/c/598/mouse_pad.html?page=%d",
+        "https://www.skroutz.gr/c/1866/Gaming_pliktrologia.html?page=%d",
+        "https://www.skroutz.gr/c/663/Gamepads.html?page=%d",
     ]
 
     custom_settings = {
