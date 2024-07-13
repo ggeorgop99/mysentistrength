@@ -13,15 +13,6 @@ class AmazonReviewsSpider(scrapy.Spider):
 
     # Define a list of base URLs for different categories
     base_urls = [
-        "https://www.skroutz.gr/c/246/othones-provolis-projector.html?page=%d",
-        "https://www.skroutz.gr/c/1388/presenters.html?page=%d",
-        "https://www.skroutz.gr/c/487/baseis-protzektora.html?page=%d",
-        "https://www.skroutz.gr/c/488/tsantes-protzektora.html?page=%d",
-        "https://www.skroutz.gr/c/486/lampes-protzektora.html?page=%d",
-        "https://www.skroutz.gr/c/1803/systimata_lipsis.html?page=%d",
-        "https://www.skroutz.gr/c/1804/syskeyes_multimedia.html?page=%d",
-        "https://www.skroutz.gr/c/1970/kalodia_eikonas.html?page=%d",
-        "https://www.skroutz.gr/c/6/diafora_eikonas.html?page=%d",
         "https://www.skroutz.gr/c/1802/forites_syskeyes_eikonas.html?page=%d"
     ]
 
@@ -76,7 +67,15 @@ class AmazonReviewsSpider(scrapy.Spider):
         }
 
         # Start with the first URL in the list
-        yield Request(self.base_urls[self.current_url_index] % 1, callback=self.parse, headers=headers, meta={'page': 1})
+        yield Request(self.base_urls[self.current_url_index] % 1, callback=self.parse, headers=headers, meta={'page': 1}, errback=self.handle_error)
+
+    def handle_error(self, failure):
+        # Handle 301 redirection and move to the next URL
+        self.logger.error(f"Request failed: {failure.value}")
+        self.current_url_index += 1
+        if self.current_url_index < len(self.base_urls):
+            next_base_url = self.base_urls[self.current_url_index]
+            yield Request(next_base_url % 1, callback=self.parse, headers=failure.request.headers, meta={'page': 1}, errback=self.handle_error)
 
     def parse(self, response):
         base_url = self.base_urls[self.current_url_index]
@@ -89,7 +88,7 @@ class AmazonReviewsSpider(scrapy.Spider):
             if self.current_url_index < len(self.base_urls):
                 # Start the next URL from page 1
                 next_base_url = self.base_urls[self.current_url_index]
-                yield Request(next_base_url % 1, callback=self.parse, headers=response.request.headers, meta={'page': 1})
+                yield Request(next_base_url % 1, callback=self.parse, headers=response.request.headers, meta={'page': 1}, errback=self.handle_error)
             return
         
         for url in new_urls:
@@ -97,7 +96,7 @@ class AmazonReviewsSpider(scrapy.Spider):
 
         # Schedule the next page
         next_page = page + 1
-        yield Request(base_url % next_page, callback=self.parse, headers=response.request.headers, meta={'page': next_page})
+        yield Request(base_url % next_page, callback=self.parse, headers=response.request.headers, meta={'page': next_page}, errback=self.handle_error)
 
     def close(self, reason):
         # Convert the items to a DataFrame
