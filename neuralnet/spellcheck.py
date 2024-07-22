@@ -1,5 +1,8 @@
 # Initialize Hunspell spell checker
-hspell = hunspell.HunSpell('/usr/share/hunspell/el_GR.dic', '/usr/share/hunspell/el_GR.aff')
+hspell = hunspell.HunSpell(
+    "/usr/share/hunspell/el_GR.dic", "/usr/share/hunspell/el_GR.aff"
+)
+
 
 def spell_check(text):
     corrected_text = []
@@ -9,9 +12,9 @@ def spell_check(text):
         else:
             suggestions = hspell.suggest(word)
             corrected_text.append(suggestions[0] if suggestions else word)
-    return ' '.join(corrected_text)
+    return " ".join(corrected_text)
+
 
 def preprocess_text(text, stopwords):
-    #before tokenizing
+    # before tokenizing
     text = spell_check(text)
-  

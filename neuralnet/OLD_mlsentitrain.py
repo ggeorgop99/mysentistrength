@@ -85,13 +85,15 @@ if mode1 == "train":
     sns.countplot(Y)
     plt.show()
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+    X_train, X_test, Y_train, Y_test = train_test_split(
+        X, Y, test_size=0.3, random_state=42
+    )
 
     vec = CountVectorizer()
     vec.fit(X_train.astype("U"))
-    with open('savedmodel' + mode + '/count_vectorizer.pkl', 'wb') as f:
+    with open("savedmodel" + mode + "/count_vectorizer.pkl", "wb") as f:
         pickle.dump(vec, f)
-    
+
     x_train = vec.transform(X_train.astype("U"))
     x_test = vec.transform(X_test.astype("U"))
     if mode == "nonbin":
@@ -116,25 +118,31 @@ if mode1 == "train":
         batch_size=16,
     )
 
-    model.save("savedmodel" + mode+ "/savedmodel" + mode + ".h5")
-    model.save("savedmodel" + mode+ "/savedmodel" + mode + ".keras")
-    np.save("savedmodel" + mode+ "/savedmodel" + mode + ".npy", history.history)
+    model.save("savedmodel" + mode + "/savedmodel" + mode + ".h5")
+    model.save("savedmodel" + mode + "/savedmodel" + mode + ".keras")
+    np.save("savedmodel" + mode + "/savedmodel" + mode + ".npy", history.history)
 
 
 #################################################################################################################################
 #################################################################################################################################
 #################################################################################################################################
 
-#plots
+# plots
 
 if mode1 == "graphs":
-    
 
-    model = tensorflow.keras.models.load_model("savedmodel" + mode + "/savedmodel" + mode + ".keras")
+    model = tensorflow.keras.models.load_model(
+        "savedmodel" + mode + "/savedmodel" + mode + ".keras"
+    )
     history = np.load(
         "savedmodel" + mode + "/savedmodel" + mode + ".npy", allow_pickle="TRUE"
     ).item()
-    plot_model(model, to_file='model_plot_' + mode + '.png', show_shapes=True, show_layer_names=True)
+    plot_model(
+        model,
+        to_file="model_plot_" + mode + ".png",
+        show_shapes=True,
+        show_layer_names=True,
+    )
 
     # list all data in history
 

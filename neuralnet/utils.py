@@ -1,5 +1,6 @@
 import os
 
+
 def generate_unique_filename(directory, file_name, mode, extension):
     counter = 1
     file_path = os.path.join(directory, f"{file_name}_{mode}.{extension}")
