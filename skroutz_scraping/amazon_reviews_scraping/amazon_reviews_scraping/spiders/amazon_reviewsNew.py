@@ -15,14 +15,24 @@ class AmazonReviewsSpider(scrapy.Spider):
 
     # Define a list of base URLs for different categories
     base_urls = [
-        "https://www.skroutz.gr/c/108/game_consoles.html?page=%d",
-        "https://www.skroutz.gr/c/1867/gaming_peripherals.html?page=%d",
-        "https://www.skroutz.gr/c/4968/Headset-Stand.html?page=%d",
-        "https://www.skroutz.gr/c/2507/diafora-perifereiaka-gaming.html?page=%d",
-        "https://www.skroutz.gr/c/664/wheels.html?page=%d",
-        "https://www.skroutz.gr/c/598/mouse_pad.html?page=%d",
-        "https://www.skroutz.gr/c/1866/Gaming_pliktrologia.html?page=%d",
-        "https://www.skroutz.gr/c/663/Gamepads.html?page=%d",
+        "https://www.skroutz.gr/c/37/gadgets.html?page=%d",
+        "https://www.skroutz.gr/c/5067/refurbished-kinhta-thlefwna.html?page=%d",
+        "https://www.skroutz.gr/c/5104/refurbished-desktop.html?page=%d",
+        "https://www.skroutz.gr/c/5066/refurbished-laptops.html?page=%d",
+        "https://www.skroutz.gr/c/3731/drones-thlekateuthinomena.html?page=%d",
+        "https://www.skroutz.gr/c/4689/ilektrika-patinia-aksesouar.html?page=%d",
+        "https://www.skroutz.gr/c/2/tilefwnia.html?page=%d",
+        "https://www.skroutz.gr/c/1918/Tablet_Screen_Protector.html?page=%d",
+        "https://www.skroutz.gr/c/992/ebook-readers.html?page=%d",
+        "https://www.skroutz.gr/c/233/videokameres-aksesouar.html?page=%d",
+        "https://www.skroutz.gr/c/1918/Tablet_Screen_Protector.html?page=%d",
+        "https://www.skroutz.gr/c/1883/Action-Camera.html?page=%d",
+        "https://www.skroutz.gr/c/231/fotografikes-mhxanes-aksesouar.html?page=%d",
+        "https://www.skroutz.gr/c/1913/Activity_Trackers.html?page=%d",
+        "https://www.skroutz.gr/c/4077/axesouar-wearables.html?page=%d",
+        "https://www.skroutz.gr/c/1705/Smartwatches.html?page=%d",
+        "https://www.skroutz.gr/c/4996/exoplismos-studio-dj.html?page=%d",
+        "https://www.skroutz.gr/c/4995/compact-forita-ixosistimata.html?page=%d",
     ]
 
     custom_settings = {
